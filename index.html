@@ -652,24 +652,26 @@
   .ac-copy .heart { color: var(--pink); }
 
   /* ═══════════════════════════════════════
-     MOBILE
+     MOBILE — locked vertical panels (same feel as desktop)
   ═══════════════════════════════════════ */
   @media (max-width: 900px) {
-    html { scroll-snap-type: y mandatory; }
-    html, body { height: auto; overflow-y: auto; overflow-x: hidden; }
-    .viewport { height: auto; overflow: visible; }
-    .track { flex-direction: column; height: auto; transition: none; transform: none !important; }
+    html, body { height: 100%; overflow: hidden; }
+    .viewport { position: fixed; inset: 0; overflow: hidden; }
+    .track {
+      flex-direction: column; height: auto;
+      /* keep desktop transition for smooth vertical slide */
+    }
     .panel {
       min-width: 100%; width: 100%;
-      height: auto; min-height: 100vh; min-height: 100svh;
+      height: 100vh; height: 100svh;
+      min-height: 0;
       padding: 0;
-      overflow: visible;
-      display: flex; align-items: center; justify-content: center;
-      scroll-snap-align: start;
+      overflow: hidden;
+      flex-shrink: 0;
     }
     .panel .inner {
       opacity: 1; transform: none; transition: none;
-      height: auto; min-height: 100vh; min-height: 100svh;
+      height: 100%;
       padding: 0; flex-direction: column;
       display: flex; align-items: center; justify-content: center;
     }
@@ -684,22 +686,22 @@
     .hero-name-line::after { width: 36px; margin: 24px auto; }
     .hero-tagline { font-size: 1.05rem; margin-bottom: 36px; }
 
-    /* ── Projects ── */
-    .panel-proj { min-height: auto; scroll-snap-align: none; }
-    .panel-proj .inner { padding: 0; min-height: auto; align-items: stretch; }
+    /* ── Projects (panel expands for 2 full-screen cards) ── */
+    .panel-proj { height: auto; }
+    .panel-proj .inner { height: auto; padding: 0; align-items: stretch; }
     .proj-wrap {
       flex-direction: column; gap: 0; height: auto;
       width: 100%; max-width: 100%;
     }
     .pcard {
-      min-height: 100vh; min-height: 100svh;
+      height: 100vh; height: 100svh;
+      min-height: 0;
       padding: 52px 24px 24px;
       border-radius: 0;
-      flex: none;
-      overflow: visible;
+      flex: none; flex-shrink: 0;
+      overflow: hidden;
       display: flex; flex-direction: column;
       justify-content: center;
-      scroll-snap-align: start;
     }
     .pcard-eyebrow { margin-bottom: 8px; }
     .pcard-header { flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
@@ -710,7 +712,6 @@
     .pcard-visual {
       flex: none;
       margin-top: 20px; padding-top: 0;
-      overflow: visible;
     }
     .mock { width: 90%; max-width: 340px; }
     .mock-body { padding: 10px; gap: 6px; }
@@ -740,7 +741,7 @@
     .hero-name-line { font-size: 2rem; }
     .hero-tagline { font-size: 0.95rem; }
     .ha-btn { font-size: 0.78rem; padding: 10px 22px; }
-    .pcard { padding: 64px 20px 20px; }
+    .pcard { padding: 52px 20px 20px; }
     .pcard-title { font-size: 1.4rem; }
     .mock-body { min-height: 80px; }
     .sk-bk { height: 24px; }
@@ -914,16 +915,39 @@
   const T = panels.length;
   let cur = 0, busy = false, lw = 0;
 
+  /* Desktop dots */
   for (let i = 0; i < T; i++) {
     const d = document.createElement('button');
     d.className = 'cdot' + (i === 0 ? ' active' : '');
     d.onclick = () => go(i);
     dotsEl.appendChild(d);
   }
+
   const mob = () => window.innerWidth <= 900;
 
-  function go(i) {
-    if (mob()) { panels[i].scrollIntoView({ behavior: 'smooth' }); return; }
+  /* ── Mobile sections: hero, card1, card2, about ── */
+  const mobSections = [];
+  panels.forEach(p => {
+    if (p.classList.contains('panel-proj')) {
+      p.querySelectorAll('.pcard').forEach(c => mobSections.push(c));
+    } else {
+      mobSections.push(p);
+    }
+  });
+  const MT = mobSections.length;
+  let mobCur = 0;
+
+  function goMob(i) {
+    if (i < 0 || i >= MT || busy) return;
+    busy = true;
+    mobCur = i;
+    const vh = window.innerHeight;
+    track.style.transform = `translateY(-${mobCur * vh}px)`;
+    setTimeout(() => busy = false, 620);
+  }
+
+  /* ── Desktop panel navigation ── */
+  function goDesk(i) {
     if (i < 0 || i >= T || busy) return;
     busy = true; cur = i;
     track.style.transform = `translateX(-${cur * 100}vw)`;
@@ -936,9 +960,22 @@
     navBtns.forEach(b => b.classList.toggle('active', b.textContent === nm[cur]));
     setTimeout(() => busy = false, 520);
   }
-  function next() { go(cur + 1); }
-  function prev() { go(cur - 1); }
 
+  /* ── Unified go() for nav buttons ── */
+  function go(i) {
+    if (mob()) {
+      /* Map desktop panel index → mobile section index */
+      const map = [0, 1, MT - 1];
+      goMob(map[i] !== undefined ? map[i] : i);
+    } else {
+      goDesk(i);
+    }
+  }
+
+  function next() { mob() ? goMob(mobCur + 1) : goDesk(cur + 1); }
+  function prev() { mob() ? goMob(mobCur - 1) : goDesk(cur - 1); }
+
+  /* ── Desktop: wheel ── */
   window.addEventListener('wheel', e => {
     if (mob()) return;
     e.preventDefault();
@@ -948,25 +985,49 @@
     else if (e.deltaY < -3 || e.deltaX < -3) prev();
   }, { passive: false });
 
+  /* ── Keyboard ── */
   window.addEventListener('keydown', e => {
-    if (mob()) return;
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); next(); }
     if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prev(); }
   });
 
-  let tx = 0;
-  window.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
-  window.addEventListener('touchend', e => {
-    if (mob()) return;
-    const d = e.changedTouches[0].clientX - tx;
-    if (Math.abs(d) > 50) d < 0 ? next() : prev();
+  /* ── Touch: vertical swipe on mobile, horizontal on desktop ── */
+  let tx = 0, ty = 0;
+  window.addEventListener('touchstart', e => {
+    tx = e.touches[0].clientX;
+    ty = e.touches[0].clientY;
   }, { passive: true });
 
+  window.addEventListener('touchend', e => {
+    if (mob()) {
+      const dy = ty - e.changedTouches[0].clientY;
+      if (Math.abs(dy) > 40) {
+        if (dy > 0) goMob(mobCur + 1);
+        else goMob(mobCur - 1);
+      }
+    } else {
+      const dx = e.changedTouches[0].clientX - tx;
+      if (Math.abs(dx) > 50) dx < 0 ? next() : prev();
+    }
+  }, { passive: true });
+
+  /* ── Resize: recalculate position ── */
   window.addEventListener('resize', () => {
-    if (!mob()) track.style.transform = `translateX(-${cur * 100}vw)`;
-    else track.style.transform = 'none';
+    if (!mob()) {
+      track.style.transform = `translateX(-${cur * 100}vw)`;
+    } else {
+      const vh = window.innerHeight;
+      track.style.transform = `translateY(-${mobCur * vh}px)`;
+    }
   });
-  go(0);
+
+  /* ── Init ── */
+  if (mob()) {
+    track.style.transform = 'translateY(0)';
+    panels.forEach(p => p.classList.add('active'));
+  } else {
+    go(0);
+  }
 </script>
 
 </body>
