@@ -314,6 +314,32 @@
     background-clip: text;
   }
 
+  /* ═══ SCROLL HINT (mobile only) ═══ */
+  .scroll-hint {
+    display: none;
+    position: absolute;
+    bottom: 28px;
+    left: 50%; transform: translateX(-50%);
+    flex-direction: column; align-items: center; gap: 6px;
+    animation: fadeUp 0.8s var(--ease-out) 1s both;
+  }
+  .scroll-hint span {
+    font-size: 0.65rem; font-weight: 500;
+    color: var(--gray-400);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .scroll-hint .chevron {
+    width: 20px; height: 20px;
+    border-right: 1.5px solid var(--gray-300);
+    border-bottom: 1.5px solid var(--gray-300);
+    transform: rotate(45deg);
+    animation: scrollBounce 2s ease infinite;
+  }
+  @keyframes scrollBounce {
+    0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.6; }
+    50% { transform: rotate(45deg) translateY(4px); opacity: 1; }
+  }
+
   /* ═══════════════════════════════════════
      PROJECT CARDS — v5 layout + serif titles + deco shapes
   ═══════════════════════════════════════ */
@@ -627,23 +653,41 @@
      MOBILE
   ═══════════════════════════════════════ */
   @media (max-width: 900px) {
+    html { scroll-snap-type: y proximity; }
     html, body { height: auto; overflow-y: auto; overflow-x: hidden; }
     .viewport { height: auto; overflow: visible; }
     .track { flex-direction: column; height: auto; transition: none; transform: none !important; }
-    .panel { min-width: 100%; width: 100%; height: auto; min-height: 0; padding: 0; }
-    .panel .inner { opacity: 1; transform: none; transition: none; height: auto; padding: 0; flex-direction: column; }
+    .panel {
+      min-width: 100%; width: 100%;
+      min-height: 100vh; min-height: 100svh;
+      padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      scroll-snap-align: start;
+    }
+    .panel .inner {
+      opacity: 1; transform: none; transition: none;
+      height: 100%; min-height: 100vh; min-height: 100svh;
+      padding: 0; flex-direction: column;
+      display: flex; align-items: center; justify-content: center;
+    }
     .controls { display: none; }
     .doodle { display: none; }
 
-    .panel-hero .inner { padding: 80px 24px 48px; }
-    .hero-eyebrow { margin-bottom: 24px; letter-spacing: 0.14em; font-size: 0.68rem; }
+    /* ── Hero ── */
+    .scroll-hint { display: flex; }
+    .panel-hero .inner { padding: 0 28px; }
+    .hero-eyebrow { margin-bottom: 28px; letter-spacing: 0.14em; font-size: 0.68rem; }
     .hero-name-line { font-size: 2.4rem; white-space: normal; }
-    .hero-name-line::after { width: 36px; margin: 20px auto; }
-    .hero-tagline { font-size: 1.05rem; margin-bottom: 32px; }
+    .hero-name-line::after { width: 36px; margin: 24px auto; }
+    .hero-tagline { font-size: 1.05rem; margin-bottom: 36px; }
 
-    .panel-proj .inner { padding: 12px 20px; }
-    .proj-wrap { flex-direction: column; gap: 16px; height: auto; }
-    .pcard { min-height: 360px; padding: 24px 22px 0; border-radius: 16px; }
+    /* ── Projects ── */
+    .panel-proj .inner { padding: 24px 20px; }
+    .proj-wrap {
+      flex-direction: column; gap: 16px; height: auto;
+      width: 100%; max-width: 100%;
+    }
+    .pcard { min-height: 0; padding: 24px 22px 0; border-radius: 16px; flex: none; }
     .pcard-title { font-size: 1.35rem; }
     .pcard-desc { font-size: 0.82rem; max-width: 100%; }
     .mock { width: 82%; }
@@ -656,7 +700,8 @@
     .feat-title { font-size: 1.65rem; }
     .feat-desc { max-width: 100%; }
 
-    .panel-ac .inner { padding: 48px 24px 40px; }
+    /* ── About + Contact ── */
+    .panel-ac .inner { padding: 0 28px; }
     .ac-heading { font-size: 2rem; }
     .ac-stats { gap: 10px; max-width: 340px; }
     .ac-stat { padding: 12px 10px; border-radius: 12px; }
@@ -673,7 +718,7 @@
     .hero-name-line { font-size: 2rem; }
     .hero-tagline { font-size: 0.95rem; }
     .ha-btn { font-size: 0.78rem; padding: 10px 22px; }
-    .pcard { min-height: 320px; padding: 20px 18px 0; }
+    .pcard { padding: 20px 18px 0; }
     .pcard-title { font-size: 1.2rem; }
     .mock-body { min-height: 80px; }
     .sk-bk { height: 24px; }
@@ -741,6 +786,10 @@
             Email
           </a>
         </div>
+      </div>
+      <div class="scroll-hint">
+        <span>Scroll</span>
+        <div class="chevron"></div>
       </div>
     </div>
   </section>
