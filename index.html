@@ -356,24 +356,47 @@
     margin-bottom: 8px;
   }
   .pcard-title em { font-style: italic; }
+  .pcard-content {
+    display: flex; flex-direction: column;
+  }
+  .pcard-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px;
+  }
   .pcard-desc {
     font-size: 0.9rem; font-weight: 300;
     line-height: 1.6; color: var(--gray-500);
     max-width: 300px;
   }
   .pcard-link {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 0.82rem; font-weight: 600;
-    color: var(--accent);
-    margin-top: 14px;
-    transition: gap 0.3s var(--ease-out);
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 0.68rem; font-weight: 600;
+    white-space: nowrap;
+    padding: 6px 14px;
+    border-radius: 980px;
+    transition: all 0.3s var(--ease-out);
   }
+  .pcard-link:hover {
+    gap: 8px;
+    transform: translateY(-1px);
+  }
+  .c-rose .pcard-link {
+    color: #be123c;
+    background: #fecdd3;
+  }
+  .c-rose .pcard-link:hover { box-shadow: 0 4px 12px rgba(190,18,60,0.15); }
+  .c-violet .pcard-link {
+    color: #6d28d9;
+    background: #e9d5ff;
+  }
+  .c-violet .pcard-link:hover { box-shadow: 0 4px 12px rgba(109,40,217,0.15); }
   .pcard:hover .pcard-link { gap: 8px; }
 
   .pcard-visual {
-    margin-top: auto; flex: 1;
+    margin-top: auto; padding-top: 16px;
     display: flex; align-items: flex-end; justify-content: center;
-    overflow: hidden; min-height: 0;
+    overflow: hidden;
+    flex: 1; min-height: 0;
   }
 
   /* Floating card deco */
@@ -439,7 +462,7 @@
     line-height: 1.6; color: var(--gray-500);
     max-width: 380px; margin-bottom: 18px;
   }
-  .feat-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 22px; }
+  .feat-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 22px; margin-top: 10px; }
   .feat-tag {
     font-size: 0.65rem; font-weight: 500;
     padding: 5px 12px;
@@ -732,20 +755,28 @@
         <div class="pcard c-rose">
           <svg class="pcard-deco d-float" style="top:10px;right:10px;width:26px;opacity:0.25" viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="#f97316"/></svg>
           <svg class="pcard-deco d-sparkle" style="bottom:42%;right:18px;width:18px;opacity:0.18" viewBox="0 0 40 40"><path d="M20 4L24 16L36 20L24 24L20 36L16 24L4 20L16 16Z" fill="#ec4899"/></svg>
-          <div class="pcard-eyebrow">AI Tool</div>
-          <h3 class="pcard-title">Resume <em>Roaster</em></h3>
-          <p class="pcard-desc">Three AI experts — recruiter, hiring manager, and career coach — score and roast your resume. Upload a PDF or build one from scratch via an AI interview. Free, no signup.</p>
-          <div class="feat-tags" style="margin-top:10px;margin-bottom:0"><span class="feat-tag">Next.js</span><span class="feat-tag">AI Agents</span><span class="feat-tag">ATS Optimization</span></div>
-          <a class="pcard-link" href="https://resume-roaster-dun.vercel.app" target="_blank" onclick="event.stopPropagation()">Try it live →</a>
+          <div class="pcard-content">
+            <div class="pcard-eyebrow">AI Tool</div>
+            <div class="pcard-header">
+              <h3 class="pcard-title">Resume <em>Roaster</em></h3>
+              <a class="pcard-link" href="https://resume-roaster-dun.vercel.app" target="_blank" onclick="event.stopPropagation()">Try it live →</a>
+            </div>
+            <p class="pcard-desc">Three AI experts — recruiter, hiring manager, and career coach — score and roast your resume. Upload a PDF or build one from scratch via an AI interview. Free, no signup.</p>
+            <div class="feat-tags"><span class="feat-tag">Next.js</span><span class="feat-tag">AI Agents</span><span class="feat-tag">ATS Optimization</span></div>
+          </div>
           <div class="pcard-visual"><div class="mock"><div class="mock-bar"><span class="mb"></span><span class="mb"></span><span class="mb"></span></div><img src="assets/resume-roaster-thumb.png" alt="Resume Roaster" style="width:100%;display:block;"></div></div>
         </div>
         <div class="pcard c-violet">
           <svg class="pcard-deco d-bounce" style="top:8px;right:10px;width:22px;opacity:0.2" viewBox="0 0 40 40"><rect x="8" y="8" width="24" height="24" rx="4" fill="#8b5cf6" transform="rotate(12 20 20)"/></svg>
-          <div class="pcard-eyebrow">AI Infrastructure</div>
-          <h3 class="pcard-title"><em>Orca</em></h3>
-          <p class="pcard-desc">A persistent memory layer for AI agents. Connects to any enterprise data using MCP, building a unified knowledge graph queryable in natural language.</p>
-          <div class="feat-tags" style="margin-top:10px;margin-bottom:0"><span class="feat-tag">Knowledge Graph</span><span class="feat-tag">MCP</span><span class="feat-tag">Next.js</span></div>
-          <a class="pcard-link" style="color:var(--purple)" href="https://orca-tawny.vercel.app" target="_blank" onclick="event.stopPropagation()">Try it live →</a>
+          <div class="pcard-content">
+            <div class="pcard-eyebrow">AI Infrastructure</div>
+            <div class="pcard-header">
+              <h3 class="pcard-title"><em>Orca</em></h3>
+              <a class="pcard-link" href="https://orca-tawny.vercel.app" target="_blank" onclick="event.stopPropagation()">Try it live →</a>
+            </div>
+            <p class="pcard-desc">A persistent memory layer for AI agents. Connects to any enterprise data using MCP, building a unified knowledge graph queryable in natural language.</p>
+            <div class="feat-tags"><span class="feat-tag">Knowledge Graph</span><span class="feat-tag">MCP</span><span class="feat-tag">Next.js</span></div>
+          </div>
           <div class="pcard-visual"><div class="mock"><div class="mock-bar"><span class="mb"></span><span class="mb"></span><span class="mb"></span></div><img src="assets/orca-thumb.png" alt="Orca" style="width:100%;display:block;"></div></div>
         </div>
       </div>
