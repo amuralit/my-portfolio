@@ -690,22 +690,28 @@
     }
     .pcard {
       min-height: 100vh; min-height: 100svh;
-      padding: 60px 28px 32px;
+      padding: 68px 24px 24px;
       border-radius: 0;
       flex: none;
+      overflow: visible;
       display: flex; flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       scroll-snap-align: start;
     }
-    .pcard-title { font-size: 1.5rem; }
-    .pcard-desc { font-size: 0.88rem; max-width: 100%; line-height: 1.7; }
-    .pcard-visual { flex: 1; min-height: 0; max-height: 50vh; }
-    .mock { width: 88%; max-width: 360px; }
+    .pcard-eyebrow { margin-bottom: 8px; }
+    .pcard-header { flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+    .pcard-title { font-size: 1.6rem; }
+    .pcard-desc { font-size: 0.88rem; max-width: 100%; line-height: 1.7; margin-top: 4px; }
+    .pcard-link { font-size: 0.74rem; padding: 8px 18px; }
+    .feat-tags { margin-top: 12px; margin-bottom: 0; }
+    .pcard-visual {
+      flex: 1; min-height: 120px;
+      margin-top: 20px; padding-top: 0;
+    }
+    .mock { width: 90%; max-width: 360px; }
     .mock-body { padding: 10px; gap: 6px; }
     .mock-bar { height: 22px; }
     .mb { width: 5px; height: 5px; }
-    .feat-tags { margin-bottom: 16px; }
-    .pcard-link { font-size: 0.72rem; padding: 7px 16px; }
 
     .panel-feat .inner { padding: 36px 24px; }
     .feat-wrap { grid-template-columns: 1fr; gap: 28px; }
@@ -730,8 +736,8 @@
     .hero-name-line { font-size: 2rem; }
     .hero-tagline { font-size: 0.95rem; }
     .ha-btn { font-size: 0.78rem; padding: 10px 22px; }
-    .pcard { padding: 60px 22px 24px; }
-    .pcard-title { font-size: 1.3rem; }
+    .pcard { padding: 64px 20px 20px; }
+    .pcard-title { font-size: 1.4rem; }
     .mock-body { min-height: 80px; }
     .sk-bk { height: 24px; }
     .sk-cl { height: 22px; }
